@@ -1,5 +1,7 @@
 import os
 import json
+import boto3
+
 
 from todos import decimalencoder
 import boto3
@@ -15,6 +17,10 @@ def translate(event, context):
             'id': event['pathParameters']['id']
         }
     )
+    translate = boto3.client(service_name='translate', region_name='es', use_ssl=True)
+
+    
+    result['Item']['text'] = translate.translate_text(Text=result['Item']['text'],  SourceLanguageCode="es", TargetLanguageCode=event['pathParameters']['language'])
 
     # create a response
     response = {
